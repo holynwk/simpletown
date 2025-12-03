@@ -1,0 +1,2 @@
+# simpletown
+plugin minecraft
