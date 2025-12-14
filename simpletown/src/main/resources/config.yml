@@ -1,0 +1,228 @@
+town:
+  creation:
+    cobblestone: 256
+    iron: 64
+    wood: 128
+    money: 500.0
+  claim:
+    base-cost: 20.0
+    step-increase: 20.0
+    step-size: 10
+  defaults:
+    open: true
+    citizens:
+      break: false
+      interact: false
+      place: false
+      pvp: false
+      animal-spawn: true
+      monster-spawn: true
+    outsiders:
+      break: false
+      interact: false
+      place: false
+      pvp: false
+      animal-spawn: true
+      monster-spawn: true
+
+progress:
+  ages:
+    "1":
+      chunks: 0
+      cost: 0
+      citizens: 0
+      reward: 0
+      buildings: {}
+    "2":
+      chunks: 10
+      cost: 400
+      citizens: 0
+      reward: 200
+      buildings:
+        workshop: 1
+        warehouse: 1
+    "3":
+      chunks: 30
+      cost: 800
+      citizens: 0
+      reward: 300
+      buildings: {}
+    "4":
+      chunks: 50
+      cost: 1600
+      citizens: 1
+      reward: 300
+      buildings:
+        workshop: 3
+    "5":
+      chunks: 85
+      cost: 2500
+      citizens: 1
+      reward: 400
+      buildings: {}
+    "6":
+      chunks: 110
+      cost: 4000
+      citizens: 2
+      reward: 500
+      buildings:
+        workshop: 4
+        bank: 1
+    "7":
+      chunks: 150
+      cost: 6000
+      citizens: 3
+      reward: 600
+      buildings:
+        laboratory: 1
+        university: 1
+        power_plant: 1
+    "8":
+      chunks: 175
+      cost: 8500
+      citizens: 5
+      reward: 800
+      buildings:
+        workshop: 5
+        bank: 2
+    "9":
+      chunks: 200
+      cost: 11000
+      citizens: 5
+      reward: 900
+      buildings:
+        industrial_factory: 1
+        bank: 3
+    "10":
+      chunks: 300
+      cost: 15000
+      citizens: 5
+      reward: 1000
+      buildings:
+        workshop: 6
+
+  buildings:
+    warehouse:
+      levels:
+        "1":
+          cost: 400
+        "2":
+          cost: 1000
+        "3":
+          cost: 3000
+    bank:
+      levels:
+        "1":
+          cost: 2000
+          income: 150
+        "2":
+          cost: 4000
+          income: 300
+        "3":
+          cost: 6000
+          income: 500
+    workshop:
+      levels:
+        "1":
+          cost: 300
+        "2":
+          cost: 700
+        "3":
+          cost: 1200
+        "4":
+          cost: 1500
+        "5":
+          cost: 4000
+        "6":
+          cost: 8000
+    armory:
+      levels:
+        "1":
+          cost: 400
+        "2":
+          cost: 900
+        "3":
+          cost: 2500
+        "4":
+          cost: 6000
+    university:
+      cost: 4000
+    power_plant:
+      cost: 3500
+    laboratory:
+      cost: 5000
+    industrial_factory:
+      cost: 6000
+    machine_factory:
+      cost: 9000
+    military_factory:
+      cost: 14000
+
+crafting:
+  restricted:
+    - item: STONE_SWORD
+      min-age: 2
+      require-town: true
+      mayor-only: false
+    - item: IRON_SWORD
+      min-age: 3
+      require-town: true
+      mayor-only: false
+    - item: DIAMOND_SWORD
+      min-age: 7
+      require-town: true
+      mayor-only: false
+    - item: NETHERITE_SWORD
+      min-age: 9
+      require-town: true
+      mayor-only: false
+    - item: TNT
+      min-age: 10
+      require-town: true
+      mayor-only: true
+  building-locks:
+    - building: WORKSHOP
+      level: 1
+      prefixes:
+        - STONE
+        - COBBLESTONE
+        - ANDESITE
+        - DIORITE
+        - GRANITE
+    - building: WORKSHOP
+      level: 2
+      prefixes:
+        - IRON
+    - building: WORKSHOP
+      level: 3
+      prefixes:
+        - COPPER
+    - building: WORKSHOP
+      level: 4
+      prefixes:
+        - GOLD
+        - GOLDEN
+    - building: WORKSHOP
+      level: 5
+      prefixes:
+        - DIAMOND
+    - building: WORKSHOP
+      level: 6
+      prefixes:
+        - NETHERITE
+    - building: ARMORY
+      level: 1
+      prefixes:
+        - STONE_SWORD
+    - building: ARMORY
+      level: 2
+      prefixes:
+        - IRON_SWORD
+    - building: ARMORY
+      level: 3
+      prefixes:
+        - DIAMOND_SWORD
+    - building: ARMORY
+      level: 4
+      prefixes:
+        - NETHERITE_SWORD
