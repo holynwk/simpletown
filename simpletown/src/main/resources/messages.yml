@@ -13,7 +13,7 @@ admin:
     bank-invalid: "&cНекорректное значение для казны."
     bank: "&aБаланс казны города \"{town}\" теперь {amount}."
 town:
-  usage: "&eИспользуйте /town new, delete, claim, unclaim, join, leave, invite, kick, bank, deposit, withdraw, settings."
+  usage: "&eИспользуйте /town new, delete, claim, unclaim, join, leave, invite, kick, bank, deposit, withdraw, settings, inv, resources, info, set."
   create-usage: "&cИспользование: /town new <название>."
   empty-name: "&cНазвание города не может быть пустым."
   exists: "&cГород с таким названием уже существует."
@@ -88,6 +88,24 @@ town:
   not-mayor-settings: "&cНастройки доступны только мэру города."
   not-mayor: "&cЭту операцию может выполнять только мэр города."
   not-member: "&cВы не состоите в городе."
+  set:
+    usage: "&cИспользование: /town set <center|color> ..."
+    center-not-claimed: "&cЦентр можно ставить только в занятом чанке вашего города."
+    center-failed: "&cНе удалось установить центр. Попробуйте снова."
+    center-success: "&aНовый центр города установлен!"
+    color-usage: "&cИспользование: /town set color <#RRGGBB> или <R G B>."
+    color-invalid: "&cНекорректный цвет. Используйте #RRGGBB или три числа 0-255."
+    color-success: "&aЦвет города обновлен на {color}."
+  resources:
+    title: "&6Ресурсы города"
+    type: "Ресурс:"
+    coords: "Координаты:"
+    reward: "Добыча:"
+    discovered: "Обнаружен:"
+    previous: "Предыдущая страница"
+    next: "Следующая страница"
+  rich-chunk-found: "&eЧанк X {x}, Z {z} оказался богат ресурсами! &bТип: {type}"
+  rich-chunk-type: "&eВид чанка: &b{type}"
   inventory:
     missing: "&cСклад еще не построен."
   build:
@@ -95,6 +113,13 @@ town:
     dep: "&cТребуется постройка: {building}"
     money: "&cНедостаточно средств в казне. Нужно {cost}."
     success: "&aПостройка \"{building}\" обновлена до уровня {level}."
+  info:
+    title: "&6Информация о городе"
+    no-town: "&cЗдесь нет занятого города."
+    name: "Город: {name}"
+    chunks: "Чанков: {count}"
+    citizens: "Граждане: {count}"
+    bank: "Казна: {amount}"
   age:
     chunks: "&cНужно минимум {required} занятых чанков."
     citizens: "&cНужно минимум {required} граждан."

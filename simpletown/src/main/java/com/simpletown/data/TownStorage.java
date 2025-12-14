@@ -12,8 +12,9 @@ public class TownStorage {
     private final TownFlags defaultCitizenFlags;
     private final TownFlags defaultOutsiderFlags;
     private final boolean defaultOpen;
+    private final String defaultColor;
 
-    public TownStorage(File dataFolder, TownFlags defaultCitizenFlags, TownFlags defaultOutsiderFlags, boolean defaultOpen) {
+    public TownStorage(File dataFolder, TownFlags defaultCitizenFlags, TownFlags defaultOutsiderFlags, boolean defaultOpen, String defaultColor) {
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
@@ -21,6 +22,7 @@ public class TownStorage {
         this.defaultCitizenFlags = defaultCitizenFlags;
         this.defaultOutsiderFlags = defaultOutsiderFlags;
         this.defaultOpen = defaultOpen;
+        this.defaultColor = defaultColor;
     }
 
     public List<Town> loadTowns() {
@@ -36,6 +38,7 @@ public class TownStorage {
             double bank = config.getDouble(path + "bank", 0.0);
             boolean open = config.getBoolean(path + "open", defaultOpen);
             int ageLevel = config.getInt(path + "age", AgeTier.AGE1.getLevel());
+            String color = config.getString(path + "color", defaultColor);
             if (mayorName == null || capitalKey == null) {
                 continue;
             }
@@ -74,7 +77,7 @@ public class TownStorage {
                 }
             }
 
-            towns.add(new Town(townName, mayorName, citizens, chunks, capital, bank, open, citizenFlags, outsiderFlags, ageLevel, buildings, inventory));
+            towns.add(new Town(townName, mayorName, citizens, chunks, capital, bank, open, citizenFlags, outsiderFlags, color, ageLevel, buildings, inventory));
         }
         return towns;
     }
@@ -88,6 +91,7 @@ public class TownStorage {
             config.set(path + "bank", town.getBank());
             config.set(path + "open", town.isOpen());
             config.set(path + "age", town.getAgeLevel());
+            config.set(path + "color", town.getMapColor());
             config.set(path + "citizen-flags", town.getCitizenFlags().serialize());
             config.set(path + "outsider-flags", town.getOutsiderFlags().serialize());
 

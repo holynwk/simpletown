@@ -47,19 +47,32 @@ public class CraftRestrictionService implements Listener {
         for (Map<?, ?> raw : plugin.getConfig().getMapList("crafting.building-locks")) {
             Object buildingRaw = raw.get("building");
             Object levelRaw = raw.get("level");
-            Object prefixesRaw = raw.get("prefixes");
-            if (!(buildingRaw instanceof String building) || !(levelRaw instanceof Number number) || !(prefixesRaw instanceof List<?> list)) {
+            if (!(buildingRaw instanceof String building) || !(levelRaw instanceof Number number)) {
                 continue;
             }
             try {
                 BuildingType type = BuildingType.valueOf(building.toUpperCase(Locale.ROOT));
                 List<String> prefixes = new ArrayList<>();
-                for (Object obj : list) {
-                    if (obj instanceof String str) {
-                        prefixes.add(str.toUpperCase(Locale.ROOT));
+                Set<String> items = new HashSet<>();
+                Object prefixesRaw = raw.get("prefixes");
+                if (prefixesRaw instanceof List<?> list) {
+                    for (Object obj : list) {
+                        if (obj instanceof String str) {
+                            prefixes.add(str.toUpperCase(Locale.ROOT));
+                        }
                     }
                 }
-                buildingLocks.add(new BuildingLock(type, number.intValue(), prefixes));
+                Object itemsRaw = raw.get("items");
+                if (itemsRaw instanceof List<?> list) {
+                    for (Object obj : list) {
+                        if (obj instanceof String str) {
+                            items.add(str.toUpperCase(Locale.ROOT));
+                        }
+                    }
+                }
+                if (!prefixes.isEmpty() || !items.isEmpty()) {
+                    buildingLocks.add(new BuildingLock(type, number.intValue(), prefixes, items));
+                }
             } catch (IllegalArgumentException ignored) {
             }
         }
@@ -134,8 +147,11 @@ public class CraftRestrictionService implements Listener {
     private record Restriction(int minAge, boolean requireTown, boolean mayorOnly) {
     }
 
-    private record BuildingLock(BuildingType type, int level, List<String> prefixes) {
+    private record BuildingLock(BuildingType type, int level, List<String> prefixes, Set<String> items) {
         boolean matches(String materialName) {
+            if (items.contains(materialName)) {
+                return true;
+            }
             for (String prefix : prefixes) {
                 if (materialName.startsWith(prefix)) {
                     return true;

@@ -41,9 +41,13 @@ public class TownCommand implements CommandExecutor, TabCompleter {
     private final SettingsMenuManager settingsMenuManager;
     private final ProgressionMenuManager progressionMenuManager;
     private final TownInventoryService inventoryService;
+    private final RichChunkService richChunkService;
+    private final ResourceMenuManager resourceMenuManager;
+    private final InfoMenuManager infoMenuManager;
+    private final BlueMapService blueMapService;
     private final Map<UUID, String> pendingInvites = new HashMap<>();
 
-    public TownCommand(SimpleTownPlugin plugin, TownManager townManager, ConfirmationManager confirmationManager, MessageService messages, SettingsMenuManager settingsMenuManager, ProgressionMenuManager progressionMenuManager, TownInventoryService inventoryService) {
+    public TownCommand(SimpleTownPlugin plugin, TownManager townManager, ConfirmationManager confirmationManager, MessageService messages, SettingsMenuManager settingsMenuManager, ProgressionMenuManager progressionMenuManager, TownInventoryService inventoryService, RichChunkService richChunkService, ResourceMenuManager resourceMenuManager, InfoMenuManager infoMenuManager, BlueMapService blueMapService) {
         this.plugin = plugin;
         this.townManager = townManager;
         this.confirmationManager = confirmationManager;
@@ -51,6 +55,10 @@ public class TownCommand implements CommandExecutor, TabCompleter {
         this.settingsMenuManager = settingsMenuManager;
         this.progressionMenuManager = progressionMenuManager;
         this.inventoryService = inventoryService;
+        this.richChunkService = richChunkService;
+        this.resourceMenuManager = resourceMenuManager;
+        this.infoMenuManager = infoMenuManager;
+        this.blueMapService = blueMapService;
 
         this.cobblestoneRequired = plugin.getConfig().getInt("town.creation.cobblestone", 256);
         this.ironRequired = plugin.getConfig().getInt("town.creation.iron", 64);
@@ -85,6 +93,9 @@ public class TownCommand implements CommandExecutor, TabCompleter {
             case "builds" -> handleBuilds(sender);
             case "inv" -> handleInventory(sender);
             case "confirm" -> handleConfirm(sender, args);
+            case "resources" -> handleResources(sender);
+            case "info" -> handleInfo(sender, args);
+            case "set" -> handleSet(sender, args);
             default -> messages.sendError(sender, "general.unknown-subcommand");
         }
         return true;
@@ -134,7 +145,7 @@ public class TownCommand implements CommandExecutor, TabCompleter {
         if (!result.isMet()) {
             messages.send(player, "town.missing-resources-header");
             for (String line : result.getMessages()) {
-                player.sendMessage(line);
+                messages.sendRaw(player, line);
             }
             return;
         }
@@ -179,11 +190,13 @@ public class TownCommand implements CommandExecutor, TabCompleter {
                 capital,
                 townManager.getDefaultOpen(),
                 townManager.getDefaultCitizenFlags(),
-                townManager.getDefaultOutsiderFlags()
+                townManager.getDefaultOutsiderFlags(),
+                townManager.getDefaultColor()
         );
         townManager.addTown(town);
 
         messages.send(player, "town.created", Map.of("name", name));
+        blueMapService.refreshTown(town);
     }
 
     private RequirementResult checkRequirements(Player player, Economy economy) {
@@ -303,6 +316,7 @@ public class TownCommand implements CommandExecutor, TabCompleter {
         }
         townManager.deleteTown(town);
         messages.send(player, "town.deleted", Map.of("name", town.getName()));
+        blueMapService.refreshAll();
     }
 
     private void handleConfirm(CommandSender sender, String[] args) {
@@ -357,6 +371,17 @@ public class TownCommand implements CommandExecutor, TabCompleter {
         messages.send(player, "town.claim.success", Map.of(
                 "cost", String.format(Locale.ROOT, "%.2f", cost)
         ));
+        Optional<RichChunkService.RichChunkEntry> rich = richChunkService.recordRichChunkIfEligible(chunk);
+        rich.ifPresent(entry -> {
+            String typeLabel = entry.type().getDisplayName().toUpperCase(Locale.ROOT) + " ЧАНК";
+            messages.send(player, "town.rich-chunk-found", Map.of(
+                    "x", String.valueOf(entry.position().getX()),
+                    "z", String.valueOf(entry.position().getZ()),
+                    "type", typeLabel
+            ));
+            messages.send(player, "town.rich-chunk-type", Map.of("type", typeLabel));
+        });
+        blueMapService.refreshTown(town);
     }
 
     private void handleUnclaim(CommandSender sender) {
@@ -396,6 +421,142 @@ public class TownCommand implements CommandExecutor, TabCompleter {
         }
 
         messages.send(player, "town.unclaim.success");
+        blueMapService.refreshTown(town);
+    }
+
+    private void handleResources(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            messages.sendError(sender, "general.only-player");
+            return;
+        }
+
+        Town town = townManager.getTownByMember(player.getName());
+        if (town == null) {
+            messages.sendError(player, "town.not-in-town");
+            return;
+        }
+
+        if (!town.isMayor(player.getName())) {
+            messages.sendError(player, "town.not-mayor");
+            return;
+        }
+
+        resourceMenuManager.openResources(player, town, 1);
+    }
+
+    private void handleSet(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player player)) {
+            messages.sendError(sender, "general.only-player");
+            return;
+        }
+        Town town = townManager.getTownByMayor(player.getName());
+        if (town == null) {
+            messages.sendError(player, "town.not-mayor");
+            return;
+        }
+
+        if (args.length < 2) {
+            messages.sendError(player, "town.set.usage");
+            return;
+        }
+
+        String type = args[1].toLowerCase(Locale.ROOT);
+        switch (type) {
+            case "center" -> setTownCenter(player, town);
+            case "color" -> setTownColor(player, town, args);
+            default -> messages.sendError(player, "town.set.usage");
+        }
+    }
+
+    private void setTownCenter(Player player, Town town) {
+        Chunk chunk = player.getLocation().getChunk();
+        Town owner = townManager.getTownAtChunk(chunk);
+        if (owner == null || !owner.getName().equalsIgnoreCase(town.getName())) {
+            messages.sendError(player, "town.set.center-not-claimed");
+            return;
+        }
+
+        ChunkPosition position = ChunkPosition.fromChunk(chunk);
+        if (!townManager.setCapital(town, position)) {
+            messages.sendError(player, "town.set.center-failed");
+            return;
+        }
+
+        messages.send(player, "town.set.center-success");
+        blueMapService.refreshTown(town);
+    }
+
+    private void setTownColor(Player player, Town town, String[] args) {
+        if (args.length < 3) {
+            messages.sendError(player, "town.set.color-usage");
+            return;
+        }
+
+        String parsed = parseColorArgs(Arrays.copyOfRange(args, 2, args.length));
+        if (parsed == null) {
+            messages.sendError(player, "town.set.color-invalid");
+            return;
+        }
+
+        townManager.setColor(town, parsed);
+        messages.send(player, "town.set.color-success", Map.of("color", parsed));
+        blueMapService.refreshTown(town);
+    }
+
+    private String parseColorArgs(String[] args) {
+        if (args.length == 1) {
+            String value = args[0].trim();
+            if (!value.startsWith("#")) {
+                value = "#" + value;
+            }
+            if (value.matches("#[0-9a-fA-F]{6}")) {
+                return value.toUpperCase(Locale.ROOT);
+            }
+            return null;
+        }
+
+        if (args.length >= 3) {
+            try {
+                int r = Integer.parseInt(args[0]);
+                int g = Integer.parseInt(args[1]);
+                int b = Integer.parseInt(args[2]);
+                if (isValidColorComponent(r) && isValidColorComponent(g) && isValidColorComponent(b)) {
+                    return String.format(Locale.ROOT, "#%02X%02X%02X", r, g, b);
+                }
+            } catch (NumberFormatException ignored) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private boolean isValidColorComponent(int value) {
+        return value >= 0 && value <= 255;
+    }
+
+    private void handleInfo(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player player)) {
+            messages.sendError(sender, "general.only-player");
+            return;
+        }
+
+        Town targetTown;
+        if (args.length >= 2) {
+            String name = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).trim();
+            targetTown = townManager.getTownByName(name);
+            if (targetTown == null) {
+                messages.sendError(player, "town.not-found");
+                return;
+            }
+        } else {
+            targetTown = townManager.getTownAtChunk(player.getLocation().getChunk());
+            if (targetTown == null) {
+                messages.sendError(player, "town.info.no-town");
+                return;
+            }
+        }
+
+        infoMenuManager.open(player, targetTown);
     }
 
     private void handleJoin(CommandSender sender, String[] args) {
@@ -739,7 +900,7 @@ public class TownCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return Arrays.asList("new", "delete", "claim", "unclaim", "join", "leave", "invite", "kick", "bank", "deposit", "withdraw", "settings", "age", "builds", "inv")
+            return Arrays.asList("new", "delete", "claim", "unclaim", "join", "leave", "invite", "kick", "bank", "deposit", "withdraw", "settings", "age", "builds", "inv", "resources", "info", "set")
                     .stream()
                     .filter(it -> it.startsWith(args[0].toLowerCase(Locale.ROOT)))
                     .collect(Collectors.toList());
@@ -748,6 +909,9 @@ public class TownCommand implements CommandExecutor, TabCompleter {
             String sub = args[0].toLowerCase(Locale.ROOT);
             return switch (sub) {
                 case "join" -> townManager.getAllTownNames().stream()
+                        .filter(name -> name.toLowerCase(Locale.ROOT).startsWith(args[1].toLowerCase(Locale.ROOT)))
+                        .collect(Collectors.toList());
+                case "info" -> townManager.getAllTownNames().stream()
                         .filter(name -> name.toLowerCase(Locale.ROOT).startsWith(args[1].toLowerCase(Locale.ROOT)))
                         .collect(Collectors.toList());
                 case "invite" -> {
@@ -774,6 +938,9 @@ public class TownCommand implements CommandExecutor, TabCompleter {
                     }
                     yield Collections.emptyList();
                 }
+                case "set" -> Arrays.asList("center", "color").stream()
+                        .filter(opt -> opt.startsWith(args[1].toLowerCase(Locale.ROOT)))
+                        .collect(Collectors.toList());
                 default -> Collections.emptyList();
             };
         }

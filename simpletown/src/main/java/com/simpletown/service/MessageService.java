@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MessageService {
+    private static final String PREFIX = ChatColor.GOLD.toString() + ChatColor.BOLD + "[Города]" + ChatColor.RESET + " ";
     private final Plugin plugin;
     private FileConfiguration messages;
     private final Map<UUID, String> lastError = new HashMap<>();
@@ -44,12 +45,12 @@ public class MessageService {
 
     public void send(CommandSender sender, String path) {
         clearLastError(sender);
-        sender.sendMessage(get(path));
+        sender.sendMessage(prefixed(get(path)));
     }
 
     public void send(CommandSender sender, String path, Map<String, String> placeholders) {
         clearLastError(sender);
-        sender.sendMessage(format(path, placeholders));
+        sender.sendMessage(prefixed(format(path, placeholders)));
     }
 
     public void sendError(CommandSender sender, String path) {
@@ -65,13 +66,21 @@ public class MessageService {
             }
             lastError.put(uuid, key);
         }
-        sender.sendMessage(format(path, placeholders));
+        sender.sendMessage(prefixed(format(path, placeholders)));
+    }
+
+    public void sendRaw(CommandSender sender, String message) {
+        sender.sendMessage(prefixed(message));
     }
 
     public void clearLastError(CommandSender sender) {
         if (sender instanceof Player player) {
             lastError.remove(player.getUniqueId());
         }
+    }
+
+    public String prefixed(String message) {
+        return PREFIX + message;
     }
 
     private void load() {
