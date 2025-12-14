@@ -5,8 +5,8 @@ import org.bukkit.Material;
 public enum BuildingType {
     WAREHOUSE("Склад", Material.CHEST, 3),
     BANK("Банк", Material.GOLD_INGOT, 3),
-    WORKSHOP("Станок", Material.STONECUTTER, 6),
-    ARMORY("Оружейная", Material.STONE_SWORD, 4),
+    WORKSHOP("Станок", Material.STONECUTTER, 5),
+    ARMORY("Оружейная", Material.STONE_SWORD, 5),
     UNIVERSITY("Университет", Material.BOOKSHELF, 1),
     POWER_PLANT("Электростанция", Material.REDSTONE, 1),
     LABORATORY("Лаборатория", Material.BREWING_STAND, 1),

@@ -10,6 +10,7 @@ town:
     step-size: 10
   defaults:
     open: true
+    color: "#FFD700"
     citizens:
       break: false
       interact: false
@@ -99,7 +100,7 @@ progress:
       citizens: 5
       reward: 1000
       buildings:
-        workshop: 6
+        workshop: 5
 
   buildings:
     warehouse:
@@ -133,8 +134,6 @@ progress:
           cost: 1500
         "5":
           cost: 4000
-        "6":
-          cost: 8000
     armory:
       levels:
         "1":
@@ -145,6 +144,8 @@ progress:
           cost: 2500
         "4":
           cost: 6000
+        "5":
+          cost: 9000
     university:
       cost: 4000
     power_plant:
@@ -183,46 +184,133 @@ crafting:
   building-locks:
     - building: WORKSHOP
       level: 1
-      prefixes:
+      items:
+        - STONE_PICKAXE
+        - STONE_AXE
+        - STONE_SHOVEL
+        - STONE_HOE
         - STONE
+        - SMOOTH_STONE
+        - GLOWSTONE
+        - FURNACE
+        - GRINDSTONE
+        - LEVER
+        - DISPENSER
+        - DROPPER
+        - REPEATER
+        - COMPARATOR
+        - OBSERVER
+      prefixes:
+        - STONE_BRICK
         - COBBLESTONE
-        - ANDESITE
-        - DIORITE
         - GRANITE
+        - DIORITE
+        - ANDESITE
+        - SANDSTONE
+        - BRICK
     - building: WORKSHOP
       level: 2
-      prefixes:
-        - IRON
+      items:
+        - IRON_PICKAXE
+        - IRON_AXE
+        - IRON_SHOVEL
+        - IRON_HOE
+        - IRON_BLOCK
+        - BUCKET
+        - MINECART
+        - CHEST_MINECART
+        - FURNACE_MINECART
+        - TNT_MINECART
+        - HOPPER_MINECART
+        - COMPASS
+        - HOPPER
+        - CAULDRON
+        - PISTON
+        - ANVIL
+        - CHIPPED_ANVIL
+        - DAMAGED_ANVIL
+        - SMITHING_TABLE
+        - BLAST_FURNACE
+        - TRIPWIRE_HOOK
+        - IRON_BARS
+        - HEAVY_WEIGHTED_PRESSURE_PLATE
+        - CHAIN
+        - LANTERN
+        - STONECUTTER
+        - FLINT_AND_STEEL
+        - IRON_DOOR
+        - IRON_TRAPDOOR
+        - RAIL
+        - POWERED_RAIL
+        - ACTIVATOR_RAIL
+        - DETECTOR_RAIL
     - building: WORKSHOP
       level: 3
-      prefixes:
-        - COPPER
+      items:
+        - GOLDEN_PICKAXE
+        - GOLDEN_AXE
+        - GOLDEN_SHOVEL
+        - GOLDEN_HOE
+        - GOLD_BLOCK
+        - CLOCK
+        - GOLDEN_CARROT
+        - GOLDEN_APPLE
+        - ENCHANTED_GOLDEN_APPLE
     - building: WORKSHOP
       level: 4
-      prefixes:
-        - GOLD
-        - GOLDEN
+      items:
+        - DIAMOND_PICKAXE
+        - DIAMOND_AXE
+        - DIAMOND_SHOVEL
+        - DIAMOND_HOE
+        - DIAMOND_BLOCK
     - building: WORKSHOP
       level: 5
-      prefixes:
-        - DIAMOND
-    - building: WORKSHOP
-      level: 6
-      prefixes:
-        - NETHERITE
+      items:
+        - NETHERITE_PICKAXE
+        - NETHERITE_AXE
+        - NETHERITE_SHOVEL
+        - NETHERITE_HOE
+        - NETHERITE_BLOCK
+        - NETHERITE_INGOT
     - building: ARMORY
       level: 1
-      prefixes:
+      items:
         - STONE_SWORD
+        - LEATHER_HELMET
+        - LEATHER_CHESTPLATE
+        - LEATHER_LEGGINGS
+        - LEATHER_BOOTS
     - building: ARMORY
       level: 2
-      prefixes:
+      items:
         - IRON_SWORD
+        - SHIELD
+        - IRON_HELMET
+        - IRON_CHESTPLATE
+        - IRON_LEGGINGS
+        - IRON_BOOTS
     - building: ARMORY
       level: 3
-      prefixes:
-        - DIAMOND_SWORD
+      items:
+        - GOLDEN_SWORD
+        - GOLDEN_HELMET
+        - GOLDEN_CHESTPLATE
+        - GOLDEN_LEGGINGS
+        - GOLDEN_BOOTS
     - building: ARMORY
       level: 4
-      prefixes:
+      items:
+        - DIAMOND_SWORD
+        - DIAMOND_HELMET
+        - DIAMOND_CHESTPLATE
+        - DIAMOND_LEGGINGS
+        - DIAMOND_BOOTS
+    - building: ARMORY
+      level: 5
+      items:
         - NETHERITE_SWORD
+        - NETHERITE_HELMET
+        - NETHERITE_CHESTPLATE
+        - NETHERITE_LEGGINGS
+        - NETHERITE_BOOTS

@@ -23,7 +23,7 @@ public class ConfirmationManager {
         pending.put(player.getUniqueId(), new ConfirmationRequest(actionLabel, onAccept, onDeny));
 
         TextComponent question = new TextComponent(messages.format("confirmation.prompt", Map.of("action", actionLabel)));
-        player.sendMessage(question.getText());
+        messages.sendRaw(player, question.getText());
 
         TextComponent accept = new TextComponent("[Принять]");
         accept.setColor(net.md_5.bungee.api.ChatColor.GREEN);

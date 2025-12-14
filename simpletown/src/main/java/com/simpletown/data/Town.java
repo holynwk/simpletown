@@ -7,7 +7,7 @@ public class Town {
     private final String mayor;
     private final Set<String> citizens;
     private final Set<ChunkPosition> chunks;
-    private final ChunkPosition capital;
+    private ChunkPosition capital;
     private double bank;
     private boolean open;
     private final TownFlags citizenFlags;
@@ -15,16 +15,17 @@ public class Town {
     private int ageLevel;
     private final Map<BuildingType, Integer> buildingLevels;
     private List<org.bukkit.inventory.ItemStack> inventoryContents;
+    private String mapColor;
 
-    public Town(String name, String mayor, Set<String> citizens, Set<ChunkPosition> chunks, ChunkPosition capital, boolean open, TownFlags citizenFlags, TownFlags outsiderFlags) {
-        this(name, mayor, citizens, chunks, capital, 0.0, open, citizenFlags, outsiderFlags, AgeTier.AGE1.getLevel(), new HashMap<>(), new ArrayList<>());
+    public Town(String name, String mayor, Set<String> citizens, Set<ChunkPosition> chunks, ChunkPosition capital, boolean open, TownFlags citizenFlags, TownFlags outsiderFlags, String mapColor) {
+        this(name, mayor, citizens, chunks, capital, 0.0, open, citizenFlags, outsiderFlags, mapColor, AgeTier.AGE1.getLevel(), new HashMap<>(), new ArrayList<>());
     }
 
-    public Town(String name, String mayor, Set<String> citizens, Set<ChunkPosition> chunks, ChunkPosition capital, double bank, boolean open, TownFlags citizenFlags, TownFlags outsiderFlags) {
-        this(name, mayor, citizens, chunks, capital, bank, open, citizenFlags, outsiderFlags, AgeTier.AGE1.getLevel(), new HashMap<>(), new ArrayList<>());
+    public Town(String name, String mayor, Set<String> citizens, Set<ChunkPosition> chunks, ChunkPosition capital, double bank, boolean open, TownFlags citizenFlags, TownFlags outsiderFlags, String mapColor) {
+        this(name, mayor, citizens, chunks, capital, bank, open, citizenFlags, outsiderFlags, mapColor, AgeTier.AGE1.getLevel(), new HashMap<>(), new ArrayList<>());
     }
 
-    public Town(String name, String mayor, Set<String> citizens, Set<ChunkPosition> chunks, ChunkPosition capital, double bank, boolean open, TownFlags citizenFlags, TownFlags outsiderFlags, int ageLevel, Map<BuildingType, Integer> buildingLevels, List<org.bukkit.inventory.ItemStack> inventoryContents) {
+    public Town(String name, String mayor, Set<String> citizens, Set<ChunkPosition> chunks, ChunkPosition capital, double bank, boolean open, TownFlags citizenFlags, TownFlags outsiderFlags, String mapColor, int ageLevel, Map<BuildingType, Integer> buildingLevels, List<org.bukkit.inventory.ItemStack> inventoryContents) {
         this.name = name;
         this.mayor = normalizeName(mayor);
         this.citizens = new HashSet<>();
@@ -41,6 +42,7 @@ public class Town {
         this.buildingLevels = new HashMap<>();
         this.buildingLevels.putAll(buildingLevels);
         this.inventoryContents = new ArrayList<>();
+        this.mapColor = normalizeColor(mapColor);
         if (inventoryContents != null) {
             for (org.bukkit.inventory.ItemStack item : inventoryContents) {
                 this.inventoryContents.add(item == null ? null : item.clone());
@@ -66,6 +68,12 @@ public class Town {
 
     public ChunkPosition getCapital() {
         return capital;
+    }
+
+    public void setCapital(ChunkPosition capital) {
+        if (capital != null) {
+            this.capital = capital;
+        }
     }
 
     public double getBank() {
@@ -130,6 +138,14 @@ public class Town {
         }
     }
 
+    public String getMapColor() {
+        return mapColor;
+    }
+
+    public void setMapColor(String mapColor) {
+        this.mapColor = normalizeColor(mapColor);
+    }
+
     public boolean ownsChunk(ChunkPosition position) {
         return chunks.contains(position);
     }
@@ -176,6 +192,26 @@ public class Town {
 
     public void setOpen(boolean open) {
         this.open = open;
+    }
+
+    private String normalizeColor(String color) {
+        if (color == null) {
+            return "#FFD700";
+        }
+        String trimmed = color.trim();
+        if (!trimmed.startsWith("#")) {
+            trimmed = "#" + trimmed;
+        }
+        if (trimmed.length() == 7) {
+            return trimmed.toUpperCase(Locale.ROOT);
+        }
+        if (trimmed.length() == 4) {
+            char r = trimmed.charAt(1);
+            char g = trimmed.charAt(2);
+            char b = trimmed.charAt(3);
+            return ("#" + r + r + g + g + b + b).toUpperCase(Locale.ROOT);
+        }
+        return "#FFD700";
     }
 
     private String normalizeName(String name) {

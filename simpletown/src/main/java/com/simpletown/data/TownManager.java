@@ -10,6 +10,7 @@ public class TownManager {
     private final TownFlags defaultCitizenFlags;
     private final TownFlags defaultOutsiderFlags;
     private final boolean defaultOpen;
+    private final String defaultColor;
     private final Map<String, Town> townsByName = new HashMap<>();
     private final Map<String, Town> townsByMayor = new HashMap<>();
     private final Map<String, Town> townsByMember = new HashMap<>();
@@ -20,7 +21,8 @@ public class TownManager {
         this.defaultCitizenFlags = loadDefaults("town.defaults.citizens");
         this.defaultOutsiderFlags = loadDefaults("town.defaults.outsiders");
         this.defaultOpen = plugin.getConfig().getBoolean("town.defaults.open", true);
-        this.storage = new TownStorage(plugin.getDataFolder(), defaultCitizenFlags, defaultOutsiderFlags, defaultOpen);
+        this.defaultColor = plugin.getConfig().getString("town.defaults.color", "#FFD700");
+        this.storage = new TownStorage(plugin.getDataFolder(), defaultCitizenFlags, defaultOutsiderFlags, defaultOpen, defaultColor);
         reload();
     }
 
@@ -81,6 +83,10 @@ public class TownManager {
 
     public boolean getDefaultOpen() {
         return defaultOpen;
+    }
+
+    public String getDefaultColor() {
+        return defaultColor;
     }
 
     public boolean isDefaultFlagEnabled(TownFlag flag, boolean forCitizens) {
@@ -196,6 +202,27 @@ public class TownManager {
     public void setInventory(Town town, java.util.List<org.bukkit.inventory.ItemStack> contents) {
         town.setInventoryContents(contents);
         save();
+    }
+
+    public boolean setCapital(Town town, ChunkPosition newCapital) {
+        if (town == null || newCapital == null || !town.ownsChunk(newCapital)) {
+            return false;
+        }
+        town.setCapital(newCapital);
+        save();
+        return true;
+    }
+
+    public void setColor(Town town, String color) {
+        if (town == null) {
+            return;
+        }
+        town.setMapColor(color);
+        save();
+    }
+
+    public Collection<Town> getTowns() {
+        return Collections.unmodifiableCollection(townsByName.values());
     }
 
     public void setDefaultFlag(TownFlag flag, boolean forCitizens, boolean enabled) {

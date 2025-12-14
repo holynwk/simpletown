@@ -340,14 +340,41 @@ public class ProgressionMenuManager implements Listener {
         return switch (type) {
             case WAREHOUSE -> "Расширяет склад города для /town inv.";
             case BANK -> "Прибавляет ежедневный доход в казну.";
-            case WORKSHOP -> "Дает возможность крафтить материалы: " + currentLevelLabel(type, level) + ".";
-            case ARMORY -> "Дает возможность крафтить мечи: " + currentLevelLabel(type, level) + ".";
+            case WORKSHOP -> workshopDescription(level);
+            case ARMORY -> armoryDescription(level);
             case UNIVERSITY -> "Позволяет покупать Лабораторию и Электростанцию.";
             case POWER_PLANT -> "Обеспечивает фабрики и лабораторию энергией.";
-            case LABORATORY -> "Позволяет варить зелья горожанам.";
+            case LABORATORY -> "Позволяет варить зелья и зачаровывать предметы.";
             case INDUSTRIAL_FACTORY -> "Создает базу для промышленных зданий.";
             case MACHINE_FACTORY -> "Открывает гражданский транспорт в /town vehicles.";
             case MILITARY_FACTORY -> "Открывает военный транспорт в /town vehicles.";
+        };
+    }
+
+    private String workshopDescription(int level) {
+        int normalized = Math.max(level, 1);
+        return switch (normalized) {
+            case 1 -> "Каменный станок: каменные инструменты без мечей и брони, каменные и полированные блоки, " +
+                    "кирпичи, песчаник, светокамень и базовые механизмы (печь, точило, раздатчик, выбрасыватель, " +
+                    "повторитель, компаратор, наблюдатель, рычаг).";
+            case 2 -> "Железный станок: железные инструменты без мечей, железные блоки, ведра, вагонетки и рельсы, " +
+                    "компас, воронка, котел, поршень, наковальня, стол кузнеца, плавильная печь, крюк, прутья, " +
+                    "железная плита, цепи, фонарь, камнерез, огниво, железные двери и люки.";
+            case 3 -> "Золотой станок: золотые инструменты без мечей и брони, золотые блоки, часы, золотая морковь " +
+                    "и золотые яблоки.";
+            case 4 -> "Алмазный станок: алмазные инструменты без мечей и брони, алмазные блоки.";
+            default -> "Незеритовый станок: незеритовые инструменты без мечей и брони, незеритовые блоки и слитки.";
+        };
+    }
+
+    private String armoryDescription(int level) {
+        int normalized = Math.max(level, 1);
+        return switch (normalized) {
+            case 1 -> "Каменная оружейная: каменные мечи и кожаная броня.";
+            case 2 -> "Железная оружейная: железные мечи, щиты и железная броня.";
+            case 3 -> "Золотая оружейная: золотые мечи и золотая броня.";
+            case 4 -> "Алмазная оружейная: алмазные мечи и алмазная броня.";
+            default -> "Незеритовая оружейная: незеритовые мечи и незеритовая броня.";
         };
     }
 
@@ -384,13 +411,13 @@ public class ProgressionMenuManager implements Listener {
                 case 2 -> AgeTier.AGE3;
                 case 3 -> AgeTier.AGE4;
                 case 4 -> AgeTier.AGE5;
-                case 5 -> AgeTier.AGE7;
-                default -> AgeTier.AGE9;
+                default -> AgeTier.AGE7;
             };
             case ARMORY -> switch (nextLevel) {
                 case 1 -> AgeTier.AGE2;
                 case 2 -> AgeTier.AGE3;
-                case 3 -> AgeTier.AGE7;
+                case 3 -> AgeTier.AGE5;
+                case 4 -> AgeTier.AGE7;
                 default -> AgeTier.AGE9;
             };
             case LABORATORY, UNIVERSITY, POWER_PLANT -> AgeTier.AGE6;
@@ -402,7 +429,7 @@ public class ProgressionMenuManager implements Listener {
     private Set<BuildingType> dependencies(BuildingType type, int targetLevel) {
         return switch (type) {
             case WORKSHOP, WAREHOUSE, BANK -> Collections.emptySet();
-            case ARMORY -> targetLevel >= 3 ? Set.of(BuildingType.UNIVERSITY, BuildingType.POWER_PLANT) : Collections.emptySet();
+            case ARMORY -> targetLevel >= 4 ? Set.of(BuildingType.UNIVERSITY, BuildingType.POWER_PLANT) : Collections.emptySet();
             case INDUSTRIAL_FACTORY, LABORATORY -> Set.of(BuildingType.UNIVERSITY, BuildingType.POWER_PLANT);
             case MACHINE_FACTORY -> Set.of(BuildingType.UNIVERSITY, BuildingType.POWER_PLANT, BuildingType.INDUSTRIAL_FACTORY);
             case MILITARY_FACTORY -> Set.of(BuildingType.UNIVERSITY, BuildingType.POWER_PLANT, BuildingType.INDUSTRIAL_FACTORY, BuildingType.MACHINE_FACTORY);
@@ -419,21 +446,21 @@ public class ProgressionMenuManager implements Listener {
     }
 
     private Material workshopIcon(int level) {
-        return switch (Math.min(Math.max(level + 1, 1), 6)) {
+        return switch (Math.min(Math.max(level + 1, 1), 5)) {
             case 1 -> Material.STONECUTTER;
             case 2 -> Material.IRON_BLOCK;
-            case 3 -> Material.COPPER_BLOCK;
-            case 4 -> Material.GOLD_BLOCK;
-            case 5 -> Material.DIAMOND_BLOCK;
+            case 3 -> Material.GOLD_BLOCK;
+            case 4 -> Material.DIAMOND_BLOCK;
             default -> Material.NETHERITE_BLOCK;
         };
     }
 
     private Material armoryIcon(int level) {
-        return switch (Math.min(Math.max(level + 1, 1), 4)) {
+        return switch (Math.min(Math.max(level + 1, 1), 5)) {
             case 1 -> Material.STONE_SWORD;
             case 2 -> Material.IRON_SWORD;
-            case 3 -> Material.DIAMOND_SWORD;
+            case 3 -> Material.GOLDEN_SWORD;
+            case 4 -> Material.DIAMOND_SWORD;
             default -> Material.NETHERITE_SWORD;
         };
     }
@@ -444,15 +471,15 @@ public class ProgressionMenuManager implements Listener {
             case WORKSHOP -> switch (normalized) {
                 case 1 -> "Каменный станок";
                 case 2 -> "Железный станок";
-                case 3 -> "Медный станок";
-                case 4 -> "Золотой станок";
-                case 5 -> "Алмазный станок";
+                case 3 -> "Золотой станок";
+                case 4 -> "Алмазный станок";
                 default -> "Незеритовый станок";
             };
             case ARMORY -> switch (normalized) {
                 case 1 -> "Каменная оружейная";
                 case 2 -> "Железная оружейная";
-                case 3 -> "Алмазная оружейная";
+                case 3 -> "Золотая оружейная";
+                case 4 -> "Алмазная оружейная";
                 default -> "Незеритовая оружейная";
             };
             case WAREHOUSE -> "Склад";

@@ -21,6 +21,10 @@ public class SimpleTownPlugin extends JavaPlugin {
     private ProgressionMenuManager progressionMenuManager;
     private TownInventoryService inventoryService;
     private CraftRestrictionService craftRestrictionService;
+    private RichChunkService richChunkService;
+    private ResourceMenuManager resourceMenuManager;
+    private InfoMenuManager infoMenuManager;
+    private BlueMapService blueMapService;
     private Economy economy;
 
     @Override
@@ -34,9 +38,13 @@ public class SimpleTownPlugin extends JavaPlugin {
         progressionMenuManager = new ProgressionMenuManager(this, townManager, progressionService, messages);
         inventoryService = new TownInventoryService(townManager, messages);
         craftRestrictionService = new CraftRestrictionService(this, townManager, messages);
+        richChunkService = new RichChunkService(this);
+        resourceMenuManager = new ResourceMenuManager(richChunkService, messages);
+        infoMenuManager = new InfoMenuManager(messages);
+        blueMapService = new BlueMapService(this, townManager);
         hookEconomy();
 
-        TownCommand townCommand = new TownCommand(this, townManager, confirmationManager, messages, settingsMenuManager, progressionMenuManager, inventoryService);
+        TownCommand townCommand = new TownCommand(this, townManager, confirmationManager, messages, settingsMenuManager, progressionMenuManager, inventoryService, richChunkService, resourceMenuManager, infoMenuManager, blueMapService);
         getCommand("town").setExecutor(townCommand);
         getCommand("town").setTabCompleter(townCommand);
 
@@ -49,11 +57,14 @@ public class SimpleTownPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(progressionMenuManager, this);
         getServer().getPluginManager().registerEvents(inventoryService, this);
         getServer().getPluginManager().registerEvents(craftRestrictionService, this);
+        getServer().getPluginManager().registerEvents(resourceMenuManager, this);
+        getServer().getPluginManager().registerEvents(infoMenuManager, this);
     }
 
     @Override
     public void onDisable() {
         townManager.save();
+        richChunkService.save();
     }
 
     public Economy getEconomy() {
