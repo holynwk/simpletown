@@ -1,5 +1,6 @@
 package com.simpletown;
 
+import com.simpletown.api.SimpleTownAPI;
 import com.simpletown.command.TownAdminCommand;
 import com.simpletown.command.TownCommand;
 import com.simpletown.data.TownManager;
@@ -22,6 +23,7 @@ public class SimpleTownPlugin extends JavaPlugin {
     private TownInventoryService inventoryService;
     private CraftRestrictionService craftRestrictionService;
     private Economy economy;
+    private SimpleTownAPI api;
 
     @Override
     public void onEnable() {
@@ -29,6 +31,7 @@ public class SimpleTownPlugin extends JavaPlugin {
         messages = new MessageService(this);
         confirmationManager = new ConfirmationManager(messages);
         townManager = new TownManager(this);
+        api = new SimpleTownAPI(townManager);
         settingsMenuManager = new SettingsMenuManager(townManager, messages);
         progressionService = new ProgressionService(this);
         progressionMenuManager = new ProgressionMenuManager(this, townManager, progressionService, messages);
@@ -58,6 +61,10 @@ public class SimpleTownPlugin extends JavaPlugin {
 
     public Economy getEconomy() {
         return economy;
+    }
+
+    public SimpleTownAPI getApi() {
+        return api;
     }
 
     public boolean ensureEconomy() {
