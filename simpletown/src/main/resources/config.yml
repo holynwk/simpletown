@@ -1,0 +1,316 @@
+town:
+  creation:
+    cobblestone: 256
+    iron: 64
+    wood: 128
+    money: 500.0
+  claim:
+    base-cost: 20.0
+    step-increase: 20.0
+    step-size: 10
+  defaults:
+    open: true
+    color: "#FFD700"
+    citizens:
+      break: false
+      interact: false
+      place: false
+      pvp: false
+      animal-spawn: true
+      monster-spawn: true
+    outsiders:
+      break: false
+      interact: false
+      place: false
+      pvp: false
+      animal-spawn: true
+      monster-spawn: true
+
+progress:
+  ages:
+    "1":
+      chunks: 0
+      cost: 0
+      citizens: 0
+      reward: 0
+      buildings: {}
+    "2":
+      chunks: 10
+      cost: 400
+      citizens: 0
+      reward: 200
+      buildings:
+        workshop: 1
+        warehouse: 1
+    "3":
+      chunks: 30
+      cost: 800
+      citizens: 0
+      reward: 300
+      buildings: {}
+    "4":
+      chunks: 50
+      cost: 1600
+      citizens: 1
+      reward: 300
+      buildings:
+        workshop: 2
+    "5":
+      chunks: 85
+      cost: 2500
+      citizens: 1
+      reward: 400
+      buildings: {}
+    "6":
+      chunks: 110
+      cost: 4000
+      citizens: 2
+      reward: 500
+      buildings:
+        workshop: 3
+        bank: 1
+    "7":
+      chunks: 150
+      cost: 6000
+      citizens: 3
+      reward: 600
+      buildings:
+        laboratory: 1
+        university: 1
+        power_plant: 1
+    "8":
+      chunks: 175
+      cost: 8500
+      citizens: 5
+      reward: 800
+      buildings:
+        workshop: 4
+        bank: 2
+    "9":
+      chunks: 200
+      cost: 11000
+      citizens: 5
+      reward: 900
+      buildings:
+        industrial_factory: 1
+        bank: 3
+    "10":
+      chunks: 300
+      cost: 15000
+      citizens: 5
+      reward: 1000
+      buildings:
+        workshop: 5
+
+  buildings:
+    warehouse:
+      levels:
+        "1":
+          cost: 400
+        "2":
+          cost: 1000
+        "3":
+          cost: 3000
+    bank:
+      levels:
+        "1":
+          cost: 2000
+          income: 150
+        "2":
+          cost: 4000
+          income: 300
+        "3":
+          cost: 6000
+          income: 500
+    workshop:
+      levels:
+        "1":
+          cost: 300
+        "2":
+          cost: 750
+        "3":
+          cost: 1500
+        "4":
+          cost: 4000
+        "5":
+          cost: 6000
+    armory:
+      levels:
+        "1":
+          cost: 400
+        "2":
+          cost: 900
+        "3":
+          cost: 2500
+        "4":
+          cost: 6000
+        "5":
+          cost: 9000
+    university:
+      cost: 4000
+    power_plant:
+      cost: 3500
+    laboratory:
+      cost: 5000
+    industrial_factory:
+      cost: 6000
+    machine_factory:
+      cost: 9000
+    military_factory:
+      cost: 14000
+
+crafting:
+  restricted:
+    - item: STONE_SWORD
+      min-age: 2
+      require-town: true
+      mayor-only: false
+    - item: IRON_SWORD
+      min-age: 3
+      require-town: true
+      mayor-only: false
+    - item: DIAMOND_SWORD
+      min-age: 7
+      require-town: true
+      mayor-only: false
+    - item: NETHERITE_SWORD
+      min-age: 9
+      require-town: true
+      mayor-only: false
+    - item: TNT
+      min-age: 10
+      require-town: true
+      mayor-only: true
+  building-locks:
+    - building: WORKSHOP
+      level: 1
+      items:
+        - STONE_PICKAXE
+        - STONE_AXE
+        - STONE_SHOVEL
+        - STONE_HOE
+        - STONE
+        - SMOOTH_STONE
+        - GLOWSTONE
+        - FURNACE
+        - GRINDSTONE
+        - LEVER
+        - DISPENSER
+        - DROPPER
+        - REPEATER
+        - COMPARATOR
+        - OBSERVER
+      prefixes:
+        - STONE_BRICK
+        - COBBLESTONE
+        - GRANITE
+        - DIORITE
+        - ANDESITE
+        - SANDSTONE
+        - BRICK
+    - building: WORKSHOP
+      level: 2
+      items:
+        - IRON_PICKAXE
+        - IRON_AXE
+        - IRON_SHOVEL
+        - IRON_HOE
+        - IRON_BLOCK
+        - BUCKET
+        - MINECART
+        - CHEST_MINECART
+        - FURNACE_MINECART
+        - TNT_MINECART
+        - HOPPER_MINECART
+        - COMPASS
+        - HOPPER
+        - CAULDRON
+        - PISTON
+        - ANVIL
+        - CHIPPED_ANVIL
+        - DAMAGED_ANVIL
+        - SMITHING_TABLE
+        - BLAST_FURNACE
+        - TRIPWIRE_HOOK
+        - IRON_BARS
+        - HEAVY_WEIGHTED_PRESSURE_PLATE
+        - CHAIN
+        - LANTERN
+        - STONECUTTER
+        - FLINT_AND_STEEL
+        - IRON_DOOR
+        - IRON_TRAPDOOR
+        - RAIL
+        - POWERED_RAIL
+        - ACTIVATOR_RAIL
+        - DETECTOR_RAIL
+    - building: WORKSHOP
+      level: 3
+      items:
+        - GOLDEN_PICKAXE
+        - GOLDEN_AXE
+        - GOLDEN_SHOVEL
+        - GOLDEN_HOE
+        - GOLD_BLOCK
+        - CLOCK
+        - GOLDEN_CARROT
+        - GOLDEN_APPLE
+        - ENCHANTED_GOLDEN_APPLE
+    - building: WORKSHOP
+      level: 4
+      items:
+        - DIAMOND_PICKAXE
+        - DIAMOND_AXE
+        - DIAMOND_SHOVEL
+        - DIAMOND_HOE
+        - DIAMOND_BLOCK
+    - building: WORKSHOP
+      level: 5
+      items:
+        - NETHERITE_PICKAXE
+        - NETHERITE_AXE
+        - NETHERITE_SHOVEL
+        - NETHERITE_HOE
+        - NETHERITE_BLOCK
+        - NETHERITE_INGOT
+    - building: ARMORY
+      level: 1
+      items:
+        - STONE_SWORD
+        - LEATHER_HELMET
+        - LEATHER_CHESTPLATE
+        - LEATHER_LEGGINGS
+        - LEATHER_BOOTS
+    - building: ARMORY
+      level: 2
+      items:
+        - IRON_SWORD
+        - SHIELD
+        - IRON_HELMET
+        - IRON_CHESTPLATE
+        - IRON_LEGGINGS
+        - IRON_BOOTS
+    - building: ARMORY
+      level: 3
+      items:
+        - GOLDEN_SWORD
+        - GOLDEN_HELMET
+        - GOLDEN_CHESTPLATE
+        - GOLDEN_LEGGINGS
+        - GOLDEN_BOOTS
+    - building: ARMORY
+      level: 4
+      items:
+        - DIAMOND_SWORD
+        - DIAMOND_HELMET
+        - DIAMOND_CHESTPLATE
+        - DIAMOND_LEGGINGS
+        - DIAMOND_BOOTS
+    - building: ARMORY
+      level: 5
+      items:
+        - NETHERITE_SWORD
+        - NETHERITE_HELMET
+        - NETHERITE_CHESTPLATE
+        - NETHERITE_LEGGINGS
+        - NETHERITE_BOOTS
