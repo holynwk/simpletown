@@ -1,0 +1,28 @@
+name: simpletown
+version: '1.1.0'
+main: com.simpletown.SimpleTownPlugin
+api-version: '1.20'
+load: STARTUP
+authors: [ holynwk ]
+softdepend:
+  - BlueMap
+  - PlaceholderAPI
+depend:
+  - Vault
+description: Управление городами и странами с интеграцией BlueMap и Vault.
+commands:
+  town:
+    aliases: [t]
+    description: Управление городами
+  townadmin:
+      aliases: [ta]
+      description: Администрирование городов
+  politscore:
+    aliases: [ps]
+    description: Просмотр политических очков
+  plot:
+    aliases: [p]
+    description: Управление плотами
+  war:
+    aliases: [w]
+    description: Управление войнами
